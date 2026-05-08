@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WealthPath — Gestão Financeira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Satoshi:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- Overlay para fechar sidebar no mobile -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ═══════ SIDEBAR ═══════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- ══ LOGO — grande e bonito ══ -->
+    <div class="brand" id="brandBtn">
+      <div class="brand-name-wrap">
+        <span class="brand-title">Wealth<em>Path</em></span>
+        <span class="brand-tagline">Personal Finance</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <p class="nav-label">Menu</p>
+      <button class="nitem active" id="nav-dashboard" onclick="showPage('dashboard')">
+        <span class="nitem-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>
+        Dashboard<span class="nitem-bar"></span>
+      </button>
+      <button class="nitem" id="nav-transactions" onclick="showPage('transactions')">
+        <span class="nitem-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></svg></span>
+        Transações<span class="nitem-bar"></span>
+      </button>
+
+      <p class="nav-label" style="margin-top:16px">Planejamento</p>
+      <button class="nitem" id="nav-goals" onclick="showPage('goals')">
+        <span class="nitem-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg></span>
+        Metas<span class="nitem-bar"></span>
+      </button>
+      <button class="nitem" id="nav-debts" onclick="showPage('debts')">
+        <span class="nitem-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span>
+        Dívidas<span class="nitem-bar"></span>
+      </button>
+      <button class="nitem" id="nav-fixed" onclick="showPage('fixed')">
+        <span class="nitem-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18M8 14h2M8 18h2M13 14h3M13 18h3"/></svg></span>
+        Gastos Fixos<span class="nitem-bar"></span>
+      </button>
+    </nav>
+
+    <div class="theme-picker">
+      <p class="nav-label">Tema</p>
+      <div class="theme-row">
+        <button class="theme-btn active" data-theme="dark"   onclick="setTheme('dark',this)"   title="Escuro"><span style="background:#1a1a3e"></span></button>
+        <button class="theme-btn"        data-theme="light"  onclick="setTheme('light',this)"  title="Claro"><span style="background:#e8e8f8;border:1px solid #bbb"></span></button>
+        <button class="theme-btn"        data-theme="green"  onclick="setTheme('green',this)"  title="Verde"><span style="background:#059669"></span></button>
+        <button class="theme-btn"        data-theme="purple" onclick="setTheme('purple',this)" title="Roxo"><span style="background:#9333ea"></span></button>
+        <button class="theme-btn"        data-theme="rose"   onclick="setTheme('rose',this)"   title="Rosa"><span style="background:#f43f5e"></span></button>
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="s-avatar" id="sidebarAvatar">?</div>
+      <div><div class="s-name" id="sidebarName">Visitante</div><div class="s-role" id="sidebarRole">Não autenticado</div></div>
+      <button class="s-logout" title="Sair" onclick="handleProfileClick()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      </button>
+    </div>
+
+    <div class="sidebar-dev-footer">
+      <span>Desenvolvido por</span>
+      <a href="https://www.linkedin.com/in/gabrielramosdev" target="_blank" rel="noopener noreferrer" class="sidebar-dev-link">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        gabrielramosdev
+      </a>
+    </div>
+  </aside>
+
+<div class="app" id="app">
+
+  <!-- ═══════ MAIN ═══════ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="ham" id="hamBtn" onclick="toggleSidebar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div>
+        <h1 class="topbar-title" id="pageTitle">Dashboard</h1>
+        <p class="topbar-sub" id="pageSub">Visão geral das suas finanças</p>
+      </div>
+      <div class="topbar-right">
+        <!-- Seletor de mês navegável -->
+        <div class="month-nav">
+          <button class="month-arrow" onclick="changeMonth(-1)" title="Mês anterior">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="month-label" id="monthTag"></span>
+          <button class="month-arrow" onclick="changeMonth(1)" title="Próximo mês" id="monthNextBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <button class="btn-export" onclick="openExportModal()" title="Exportar PDF">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Exportar</span>
+        </button>
+        <button class="btn-new" onclick="openModal()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Nova Transação</span>
+        </button>
+        <!-- Botão de Perfil/Login -->
+        <button class="btn-profile" id="profileBtn" onclick="handleProfileClick()" title="Perfil / Login">
+          <div class="profile-avatar" id="profileAvatar">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <span class="profile-label" id="profileLabel">Entrar</span>
+          <span class="profile-arrow">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div class="page active" id="page-dashboard">
+
+        <!-- Banner WealthPath maior -->
+        <div class="wp-banner">
+          <div class="wp-banner-left">
+            <div>
+              <div class="wp-banner-name">Wealth<em>Path</em></div>
+              <div class="wp-banner-sub">Inteligência financeira ao seu alcance</div>
+            </div>
+          </div>
+          <div class="wp-banner-stats">
+            <div class="wp-stat"><span class="wp-stat-label">Mês atual</span><span class="wp-stat-val" id="bannerMonth"></span></div>
+            <div class="wp-stat-sep"></div>
+            <div class="wp-stat"><span class="wp-stat-label">Transações</span><span class="wp-stat-val" id="bannerTxCount">0</span></div>
+            <div class="wp-stat-sep"></div>
+            <div class="wp-stat"><span class="wp-stat-label">Situação</span><span class="wp-stat-val" id="bannerStatus">—</span></div>
+          </div>
+        </div>
+
+        <!-- Cards clicáveis -->
+        <div class="summary-grid">
+          <div class="gcard gcard-balance" onclick="showDetail('balance')">
+            <div class="gcard-glow"></div>
+            <div class="gcard-top"><span class="gcard-label">Saldo Total</span><span class="gcard-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h2M10 15h4"/></svg></span></div>
+            <div class="gcard-value" id="totalBalance">R$ 0,00</div>
+            <div class="gcard-sub">Patrimônio acumulado</div>
+            <div class="gcard-hint">Clique para ver detalhes →</div>
+          </div>
+          <div class="gcard gcard-income" onclick="showDetail('income')">
+            <div class="gcard-glow"></div>
+            <div class="gcard-top"><span class="gcard-label">Receitas</span><span class="gcard-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span></div>
+            <div class="gcard-value" id="totalIncome">R$ 0,00</div>
+            <div class="gcard-sub">Este mês</div>
+            <div class="gcard-hint">Clique para ver detalhes →</div>
+          </div>
+          <div class="gcard gcard-expense" onclick="showDetail('expense')">
+            <div class="gcard-glow"></div>
+            <div class="gcard-top"><span class="gcard-label">Despesas</span><span class="gcard-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg></span></div>
+            <div class="gcard-value" id="totalExpense">R$ 0,00</div>
+            <div class="gcard-sub">Este mês</div>
+            <div class="gcard-hint">Clique para ver detalhes →</div>
+          </div>
+          <div class="gcard gcard-savings" onclick="showDetail('savings')">
+            <div class="gcard-glow"></div>
+            <div class="gcard-top"><span class="gcard-label">Economia</span><span class="gcard-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span></div>
+            <div class="gcard-value" id="totalSavings">R$ 0,00</div>
+            <div class="gcard-sub">Receitas − Despesas</div>
+            <div class="gcard-hint">Clique para ver detalhes →</div>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="glass-card">
+            <div class="glass-card-hd">
+              <div><div class="gc-title">Fluxo de Caixa</div><div class="gc-sub">Últimos dias — Receitas vs Despesas</div></div>
+              <div class="ptabs"><button class="ptab active" onclick="setPeriod(this,7)">7d</button><button class="ptab" onclick="setPeriod(this,30)">30d</button><button class="ptab" onclick="setPeriod(this,90)">3m</button></div>
+            </div>
+            <div class="chart-wrap"><canvas id="flowChart"></canvas></div>
+          </div>
+          <div class="glass-card">
+            <div class="glass-card-hd"><div><div class="gc-title">Por Categoria</div><div class="gc-sub">Distribuição de gastos</div></div></div>
+            <div class="chart-wrap"><canvas id="catChart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Resumo de planejamento no dashboard -->
+        <!-- ══ ALERTAS DE VENCIMENTO ══ -->
+        <div id="alertsSection" style="display:none;margin-bottom:16px">
+          <div class="glass-card alerts-card">
+            <div class="glass-card-hd">
+              <div>
+                <div class="gc-title">🔔 Contas próximas do vencimento</div>
+                <div class="gc-sub" id="alertsSubtitle">Vencendo nos próximos 7 dias</div>
+              </div>
+              <button class="link-btn" onclick="showPage('debts')">Ver todas →</button>
+            </div>
+            <div id="alertsList"></div>
+          </div>
+        </div>
+
+        <div class="dashboard-planning">
+          <div class="glass-card dash-plan-card" onclick="showPage('goals')" style="cursor:pointer">
+            <div class="glass-card-hd"><div><div class="gc-title">🎯 Metas</div><div class="gc-sub">Seus objetivos financeiros</div></div><span class="link-btn">Ver →</span></div>
+            <div id="dashGoalsSummary" style="padding:0 22px 16px"></div>
+          </div>
+          <div class="glass-card dash-plan-card" onclick="showPage('debts')" style="cursor:pointer">
+            <div class="glass-card-hd"><div><div class="gc-title">💳 Dívidas</div><div class="gc-sub">O que você deve</div></div><span class="link-btn">Ver →</span></div>
+            <div id="dashDebtsSummary" style="padding:0 22px 16px"></div>
+          </div>
+          <div class="glass-card dash-plan-card" onclick="showPage('fixed')" style="cursor:pointer">
+            <div class="glass-card-hd"><div><div class="gc-title">📅 Gastos Fixos</div><div class="gc-sub">Despesas mensais</div></div><span class="link-btn">Ver →</span></div>
+            <div id="dashFixedSummary" style="padding:0 22px 16px"></div>
+          </div>
+        </div>
+
+        <div class="glass-card" style="margin-top:16px">
+          <div class="glass-card-hd">
+            <span class="gc-title">Últimas Transações</span>
+            <button class="link-btn" onclick="showPage('transactions')">Ver todas →</button>
+          </div>
+          <div id="recentList"></div>
+        </div>
+      </div>
+
+      <!-- ══ DETALHE ══ -->
+      <div class="page" id="page-detail">
+        <div id="detailContent"></div>
+      </div>
+
+      <!-- ══ TRANSAÇÕES ══ -->
+      <div class="page" id="page-transactions">
+        <div class="glass-card">
+          <div class="glass-card-hd">
+            <span class="gc-title">Todas as Transações</span>
+            <button class="btn-new" style="padding:8px 16px;font-size:12px" onclick="openModal()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nova
+            </button>
+          </div>
+          <div id="allList"></div>
+        </div>
+      </div>
+
+      <!-- ══ METAS ══ -->
+      <div class="page" id="page-goals">
+        <div class="page-hd">
+          <div>
+            <div class="page-hd-title">🎯 Metas Financeiras</div>
+            <div class="page-hd-sub">Defina objetivos e acompanhe seu progresso</div>
+          </div>
+          <button class="btn-new" onclick="openGoalModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nova Meta
+          </button>
+        </div>
+        <div class="goals-grid" id="goalsList"></div>
+      </div>
+
+      <!-- ══ DÍVIDAS ══ -->
+      <div class="page" id="page-debts">
+        <div class="page-hd">
+          <div>
+            <div class="page-hd-title">💳 Dívidas</div>
+            <div class="page-hd-sub">Controle tudo que você deve e acompanhe os pagamentos</div>
+          </div>
+          <button class="btn-new" onclick="openDebtModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nova Dívida
+          </button>
+        </div>
+        <div class="debts-list" id="debtsList"></div>
+      </div>
+
+      <!-- ══ GASTOS FIXOS ══ -->
+      <div class="page" id="page-fixed">
+        <div class="page-hd">
+          <div>
+            <div class="page-hd-title">📅 Gastos Fixos</div>
+            <div class="page-hd-sub">Despesas que se repetem todo mês</div>
+          </div>
+          <button class="btn-new" onclick="openFixedModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo Gasto Fixo
+          </button>
+        </div>
+        <div class="fixed-hd-total">
+          <span class="gc-title">Total mensal:</span>
+          <span class="tag tag-red" id="fixedTotal"></span>
+        </div>
+        <div class="fixed-grid" id="fixedList"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: TRANSAÇÃO ══ -->
+<div class="overlay" id="overlay" onclick="overlayClick(event)">
+  <div class="modal">
+    <div class="modal-hd"><span class="modal-title">Nova Transação</span><button class="modal-close" onclick="closeModal()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="type-tabs">
+      <button class="ttab ttab-inc active" id="tabInc" onclick="setType('income')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Receita</button>
+      <button class="ttab ttab-exp" id="tabExp" onclick="setType('expense')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg> Despesa</button>
+    </div>
+    <div class="f-group"><label class="f-label">Descrição</label><input class="f-input" id="fDesc" type="text" placeholder="Ex: Salário, Supermercado..."/></div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Valor (R$)</label><input class="f-input" id="fValue" type="number" placeholder="0,00" min="0" step="0.01"/></div>
+      <div class="f-group"><label class="f-label">Data</label><input class="f-input" id="fDate" type="date"/></div>
+    </div>
+    <div class="f-group">
+      <label class="f-label">Categoria</label>
+      <select class="f-input" id="fCat">
+        <option value="">Selecione...</option>
+        <optgroup label="Receitas"><option value="Salário|💼">💼 Salário</option><option value="Freelance|🤝">🤝 Freelance</option><option value="Investimentos|📈">📈 Investimentos</option><option value="Vendas|🛍️">🛍️ Vendas</option><option value="Outros|🎁">🎁 Outros</option></optgroup>
+        <optgroup label="Despesas"><option value="Alimentação|🛒">🛒 Alimentação</option><option value="Transporte|🚗">🚗 Transporte</option><option value="Moradia|🏠">🏠 Moradia</option><option value="Saúde|💊">💊 Saúde</option><option value="Educação|🎓">🎓 Educação</option><option value="Lazer|🎮">🎮 Lazer</option><option value="Roupas|👗">👗 Roupas</option><option value="Assinaturas|📱">📱 Assinaturas</option><option value="Contas|⚡">⚡ Contas</option><option value="Outros|📦">📦 Outros</option></optgroup>
+      </select>
+    </div>
+    <button class="btn-save" onclick="addTransaction()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Salvar Transação
+    </button>
+  </div>
+</div>
+
+<!-- ══ MODAL: NOVA META ══ -->
+<div class="overlay" id="goalOverlay" onclick="if(event.target.id==='goalOverlay')closeGoalModal()">
+  <div class="modal">
+    <div class="modal-hd"><span class="modal-title">🎯 Nova Meta</span><button class="modal-close" onclick="closeGoalModal()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="f-group"><label class="f-label">Nome da Meta</label><input class="f-input" id="gName" type="text" placeholder="Ex: Reserva de emergência, Viagem..."/></div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Valor da Meta (R$)</label><input class="f-input" id="gTarget" type="number" placeholder="0,00" min="0" step="0.01"/></div>
+      <div class="f-group"><label class="f-label">Já guardei (R$)</label><input class="f-input" id="gSaved" type="number" placeholder="0,00" min="0" step="0.01" value="0"/></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group">
+        <label class="f-label">Ícone</label>
+        <select class="f-input" id="gIcon">
+          <option value="🎯">🎯 Meta</option><option value="🏠">🏠 Casa</option><option value="✈️">✈️ Viagem</option>
+          <option value="💻">💻 Tecnologia</option><option value="🎓">🎓 Educação</option><option value="🚗">🚗 Veículo</option>
+          <option value="💍">💍 Casamento</option><option value="👶">👶 Família</option><option value="📈">📈 Investimento</option>
+          <option value="🛡️">🛡️ Emergência</option><option value="📱">📱 Celular</option><option value="🎮">🎮 Lazer</option>
+        </select>
+      </div>
+      <div class="f-group">
+        <label class="f-label">Cor</label>
+        <select class="f-input" id="gColor">
+          <option value="#3b82f6">🔵 Azul</option><option value="#10b981">🟢 Verde</option>
+          <option value="#8b5cf6">🟣 Roxo</option><option value="#f59e0b">🟡 Amarelo</option>
+          <option value="#f43f5e">🔴 Vermelho</option><option value="#06b6d4">🩵 Ciano</option>
+          <option value="#ec4899">🩷 Rosa</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-save" onclick="addGoal()" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
+      Criar Meta
+    </button>
+  </div>
+</div>
+
+<!-- ══ MODAL: NOVA DÍVIDA ══ -->
+<div class="overlay" id="debtOverlay" onclick="if(event.target.id==='debtOverlay')closeDebtModal()">
+  <div class="modal">
+    <div class="modal-hd"><span class="modal-title">💳 Nova Dívida</span><button class="modal-close" onclick="closeDebtModal()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+
+    <!-- Tipo: parcelas ou cartão -->
+    <div class="type-tabs" style="margin-bottom:18px">
+      <button class="ttab ttab-inc active" id="dtipoParcelas" onclick="selectDebtTipo('parcelas')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Parcelado
+      </button>
+      <button class="ttab ttab-exp" id="dtipoCartao" onclick="selectDebtTipo('cartao')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>
+        Cartão de Crédito
+      </button>
+    </div>
+
+    <div class="f-group"><label class="f-label">Nome</label><input class="f-input" id="dName" type="text" placeholder="Ex: Financiamento, Nubank..."/></div>
+
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Vencimento</label><input class="f-input" id="dVenc" type="text" placeholder="dia 10"/></div>
+      <div class="f-group">
+        <label class="f-label">Alertar com antecedência</label>
+        <select class="f-input" id="dAlert">
+          <option value="3">3 dias antes</option>
+          <option value="5" selected>5 dias antes</option>
+          <option value="7">7 dias antes</option>
+          <option value="10">10 dias antes</option>
+        </select>
+      </div>
+      <div class="f-group">
+        <label class="f-label">Ícone</label>
+        <select class="f-input" id="dIcon">
+          <option value="💳">💳 Cartão</option><option value="🏦">🏦 Empréstimo</option>
+          <option value="🏠">🏠 Financiamento</option><option value="🚗">🚗 Veículo</option>
+          <option value="📱">📱 Celular</option><option value="🏍️">🏍️ Moto</option>
+          <option value="💊">💊 Saúde</option><option value="🎓">🎓 Educação</option><option value="📦">📦 Outro</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Campos para PARCELAS -->
+    <div id="debtFieldsParcelas">
+      <div class="f-row">
+        <div class="f-group"><label class="f-label">Valor Total (R$)</label><input class="f-input" id="dTotal" type="number" placeholder="0,00" min="0" step="0.01"/></div>
+        <div class="f-group"><label class="f-label">Valor da Parcela (R$)</label><input class="f-input" id="dValorParcela" type="number" placeholder="0,00" min="0" step="0.01"/></div>
+      </div>
+      <div class="f-row">
+        <div class="f-group"><label class="f-label">Total de Parcelas</label><input class="f-input" id="dTotalParcelas" type="number" placeholder="Ex: 12, 24, 48" min="1"/></div>
+        <div class="f-group"><label class="f-label">Parcelas já pagas</label><input class="f-input" id="dParcelasPagas" type="number" placeholder="0" min="0" value="0"/></div>
+      </div>
+    </div>
+
+    <!-- Campos para CARTÃO -->
+    <div id="debtFieldsCartao" style="display:none">
+      <div class="f-group"><label class="f-label">Limite do Cartão (R$)</label><input class="f-input" id="dLimite" type="number" placeholder="Ex: 5000,00" min="0" step="0.01"/></div>
+    </div>
+
+    <div class="f-group">
+      <label class="f-label">Cor</label>
+      <div class="color-picker-row" id="dColorPicker">
+        <button type="button" class="color-opt active" onclick="selectColor('d',this,'#f43f5e')" style="background:#f43f5e"></button>
+        <button type="button" class="color-opt" onclick="selectColor('d',this,'#f59e0b')" style="background:#f59e0b"></button>
+        <button type="button" class="color-opt" onclick="selectColor('d',this,'#8b5cf6')" style="background:#8b5cf6"></button>
+        <button type="button" class="color-opt" onclick="selectColor('d',this,'#3b82f6')" style="background:#3b82f6"></button>
+        <button type="button" class="color-opt" onclick="selectColor('d',this,'#10b981')" style="background:#10b981"></button>
+        <button type="button" class="color-opt" onclick="selectColor('d',this,'#ec4899')" style="background:#ec4899"></button>
+        <button type="button" class="color-opt" onclick="selectColor('d',this,'#06b6d4')" style="background:#06b6d4"></button>
+      </div>
+      <input type="hidden" id="dColor" value="#f43f5e"/>
+    </div>
+
+    <button class="btn-save" onclick="addDebt()" style="background:linear-gradient(135deg,#f43f5e,#f59e0b)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Adicionar Dívida
+    </button>
+  </div>
+</div>
+
+<!-- ══ MODAL: PAGAR PARCELA ══ -->
+<div class="overlay" id="payDebtOverlay" onclick="if(event.target.id==='payDebtOverlay')closePayDebtModal()">
+  <div class="modal">
+    <div class="modal-hd">
+      <div>
+        <span class="modal-title">💰 Registrar Pagamento</span>
+        <div style="font-size:12px;color:var(--t2);margin-top:3px" id="payDebtParcela"></div>
+      </div>
+      <button class="modal-close" onclick="closePayDebtModal()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="pay-debt-info">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      <span id="payDebtName" style="font-weight:700;color:var(--t1)"></span>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Valor Pago (R$)</label><input class="f-input" id="payDebtValor" type="number" placeholder="0,00" min="0" step="0.01"/></div>
+      <div class="f-group"><label class="f-label">Data do Pagamento</label><input class="f-input" id="payDebtData" type="date"/></div>
+    </div>
+    <div class="f-group"><label class="f-label">Observação (opcional)</label><input class="f-input" id="payDebtObs" type="text" placeholder="Ex: Pago via Pix, boleto..."/></div>
+    <button class="btn-save" onclick="confirmPayDebt()" style="background:linear-gradient(135deg,#10b981,#059669)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Confirmar Pagamento
+    </button>
+  </div>
+</div>
+
+<!-- ══ MODAL: DETALHE DO CARTÃO ══ -->
+<div class="overlay" id="cardDetailOverlay" onclick="if(event.target.id==='cardDetailOverlay')closeCardDetail()">
+  <div class="modal" style="max-width:560px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden">
+    <div class="modal-hd" style="flex-shrink:0">
+      <div>
+        <span class="modal-title" id="cardDetailTitle">Cartão</span>
+        <div style="font-size:12px;color:var(--t2);margin-top:2px">Vencimento: <span id="cardDetailVenc"></span> · Limite: <span id="cardDetailLimit"></span></div>
+      </div>
+      <button class="modal-close" onclick="closeCardDetail()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+
+    <!-- Resumo fatura -->
+    <div style="overflow-y:auto;flex:1;padding-right:2px">
+    <div class="card-summary">
+      <div class="card-summ-item"><div class="card-summ-label">Total fatura</div><div class="card-summ-val" id="cardTotalVal">R$ 0,00</div></div>
+      <div class="card-summ-item"><div class="card-summ-label">Pago</div><div class="card-summ-val" style="color:var(--green)" id="cardPagoVal">R$ 0,00</div></div>
+      <div class="card-summ-item"><div class="card-summ-label">Pendente</div><div class="card-summ-val" style="color:var(--red)" id="cardPendenteVal">R$ 0,00</div></div>
+    </div>
+    <!-- Botão pagar fatura completa -->
+    <div id="cardPayAllWrap" style="margin-bottom:16px;display:none">
+      <button class="btn-pay-all" onclick="pagarFaturaCompleta(activeCardId)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h2M10 15h4"/></svg>
+        Pagar fatura completa · <span id="cardPayAllTotal"></span>
+      </button>
+    </div>
+    <!-- Botão pagar fatura completa -->
+    <div id="cardPayFaturaWrap" style="margin-bottom:16px;display:none">
+      <button class="btn-pay-fatura" onclick="pagarFaturaCompleta()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+        Pagar fatura completa
+        <span class="pay-fatura-val" id="cardPayFaturaVal"></span>
+      </button>
+    </div>
+
+    <!-- Adicionar item -->
+    <div class="card-add-item">
+      <div class="card-add-title">+ Adicionar gasto</div>
+      <div class="f-row">
+        <div class="f-group" style="flex:2"><label class="f-label">Descrição</label><input class="f-input" id="ciDesc" type="text" placeholder="Ex: iFood, Celular..."/></div>
+        <div class="f-group"><label class="f-label">Valor total (R$)</label><input class="f-input" id="ciValor" type="number" placeholder="0,00" min="0" step="0.01" oninput="calcParcela()"/></div>
+      </div>
+      <div class="f-row" style="align-items:flex-end">
+        <div class="f-group" style="flex:0 0 120px">
+          <label class="f-label">Parcelado em</label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input class="f-input" id="ciParcelas" type="number" placeholder="1" min="1" max="48" value="1" style="width:64px;text-align:center" oninput="calcParcela()"/>
+            <span style="font-size:13px;color:var(--t2);white-space:nowrap">x</span>
+          </div>
+        </div>
+        <div class="f-group" style="flex:1">
+          <label class="f-label">Valor da parcela (R$)</label>
+          <input class="f-input" id="ciParcelaDisplay" type="number" placeholder="0,00" min="0" step="0.01" style="color:var(--acc);font-weight:800" oninput="onParcelaManual()"/>
+        </div>
+        <div class="f-group" style="flex:0 0 120px">
+          <label class="f-label">Parcela atual (nº)</label>
+          <input class="f-input" id="ciParcelaAtual" type="number" placeholder="1" min="1" max="48" value="1" style="text-align:center"/>
+        </div>
+      </div>
+      <div class="f-row">
+        <div class="f-group">
+          <label class="f-label">Categoria</label>
+          <select class="f-input" id="ciCat">
+            <option value="🍔 Alimentação">🍔 Alimentação</option>
+            <option value="⛽ Combustível">⛽ Combustível</option>
+            <option value="🛒 Mercado">🛒 Mercado</option>
+            <option value="📺 Streaming">📺 Streaming</option>
+            <option value="👗 Roupas">👗 Roupas</option>
+            <option value="💊 Saúde">💊 Saúde</option>
+            <option value="🎮 Lazer">🎮 Lazer</option>
+            <option value="🚗 Transporte">🚗 Transporte</option>
+            <option value="📦 Outros">📦 Outros</option>
+          </select>
+        </div>
+        <div class="f-group"><label class="f-label">Data da compra</label><input class="f-input" id="ciData" type="date"/></div>
+      </div>
+      <button class="btn-save" onclick="addCardItem()" style="background:var(--grad);padding:10px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Adicionar à fatura
+      </button>
+    </div>
+
+    <!-- Lista de itens -->
+    <div id="cardItensList"></div>
+    </div><!-- end scroll wrapper -->
+  </div>
+
+  <!-- ══ RODAPÉ ══ -->
+  <footer class="site-footer">
+    <span>Desenvolvido por</span>
+    <a href="https://www.linkedin.com/in/gabrielramosdev" target="_blank" rel="noopener noreferrer" class="footer-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      gabrielramosdev
+    </a>
+  </footer>
+
+</div>
+
+<!-- ══ MODAL: GASTO FIXO ══ -->
+<div class="overlay" id="fixedOverlay" onclick="if(event.target.id==='fixedOverlay')closeFixedModal()">
+  <div class="modal">
+    <div class="modal-hd"><span class="modal-title">📅 Novo Gasto Fixo</span><button class="modal-close" onclick="closeFixedModal()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="f-group"><label class="f-label">Nome do Gasto</label><input class="f-input" id="fxName" type="text" placeholder="Ex: Aluguel, Netflix, Academia..."/></div>
+    <div class="f-row">
+      <div class="f-group"><label class="f-label">Valor Mensal (R$)</label><input class="f-input" id="fxValue" type="number" placeholder="0,00" min="0" step="0.01"/></div>
+      <div class="f-group"><label class="f-label">Dia de Vencimento</label><input class="f-input" id="fxDay" type="number" placeholder="1 a 31" min="1" max="31"/></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group">
+        <label class="f-label">Ícone</label>
+        <select class="f-input" id="fxIcon">
+          <option value="🏠">🏠 Moradia/Aluguel</option><option value="⚡">⚡ Energia</option>
+          <option value="💧">💧 Água</option><option value="📶">📶 Internet/Telefone</option>
+          <option value="🎬">🎬 Streaming</option><option value="🎵">🎵 Música</option>
+          <option value="💊">💊 Saúde/Plano</option><option value="🏋️">🏋️ Academia</option>
+          <option value="🚗">🚗 Transporte</option><option value="🎓">🎓 Educação</option>
+          <option value="📱">📱 Celular/App</option><option value="🐾">🐾 Pet</option>
+          <option value="📦">📦 Outro</option>
+        </select>
+      </div>
+      <div class="f-group">
+        <label class="f-label">Alertar com antecedência</label>
+        <select class="f-input" id="fxAlert">
+          <option value="3">3 dias antes</option>
+          <option value="5" selected>5 dias antes</option>
+          <option value="7">7 dias antes</option>
+          <option value="10">10 dias antes</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-save" onclick="addFixed()" style="background:linear-gradient(135deg,#f59e0b,#f43f5e)">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Adicionar Gasto Fixo
+    </button>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+<script src="script.js"></script>
+
+<script>
+  // Firebase cuida de tudo via onAuthStateChanged em script.js
+  // initFirebase() é chamado automaticamente pelo window.load em script.js
+
+  // Verifica sessão ao carregar — sem redirecionar
+  fetch("http://localhost:3001/api/auth/me", { credentials: "include" })
+    .then(res => res.json())
+    .then(data => {
+      if (data.logado) {
+        _currentUser  = data.usuario;
+        _isLoggedIn   = true;
+        updateProfileBtn(data.usuario);
+        loadCloudData(); // carrega dados do MongoDB
+      }
+      // Se não estiver logado, apenas mostra "Entrar" — não redireciona
+    })
+    .catch(() => {
+      // Sem servidor: apenas mostra "Entrar"
+    });
+
+  function updateProfileBtn(usuario) {
+    const label = document.getElementById("profileLabel");
+    const avatar = document.getElementById("profileAvatar");
+    const sAvatar = document.getElementById("sidebarAvatar");
+    const sName = document.getElementById("sidebarName");
+    const sRole = document.getElementById("sidebarRole");
+
+    // Iniciais
+    const initials = (usuario.name || usuario.email || "?")
+      .split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();
+    const firstName = usuario.name ? usuario.name.split(" ")[0] : usuario.email;
+
+    // Topbar
+    if (label) label.textContent = firstName;
+    if (avatar) {
+      if (usuario.avatar) {
+        avatar.innerHTML = `<img src="${usuario.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" alt="avatar">`;
+      } else {
+        avatar.innerHTML = `<span style="font-size:12px;font-weight:800;letter-spacing:-0.5px">${initials}</span>`;
+      }
+    }
+
+    // Sidebar
+    if (sAvatar) sAvatar.textContent = initials;
+    if (sName) sName.textContent = usuario.name || usuario.email;
+    if (sRole) sRole.textContent = "Autenticado";
+  }
+
+  function handleProfileClick() {
+    if (_currentUser) {
+      // Usuário logado: mostra mini menu
+      showProfileMenu();
+    } else {
+      // Não logado: vai para login
+      window.location.href = "login.html";
+    }
+  }
+
+  function showProfileMenu() {
+    // Remove menu anterior se existir
+    const old = document.getElementById("profileMenu");
+    if (old) { old.remove(); return; }
+
+    const btn = document.getElementById("profileBtn");
+    const rect = btn.getBoundingClientRect();
+
+    const menu = document.createElement("div");
+    menu.id = "profileMenu";
+    menu.style.cssText = `
+      position:fixed; top:${rect.bottom + 10}px; right:${window.innerWidth - rect.right}px;
+      background:var(--surface2,#1a1a3e); border:1px solid rgba(255,255,255,0.1);
+      border-radius:16px; padding:8px; min-width:200px; z-index:9999;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5); backdrop-filter:blur(20px);
+      animation: fadeInDown 0.2s ease-out;
+    `;
+
+    const name = _currentUser.name || _currentUser.email;
+    const email = _currentUser.email;
+
+    menu.innerHTML = `
+      <div style="padding:12px 14px 10px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:6px">
+        <div style="font-weight:800;font-size:14px;color:var(--t1,#fff)">${name}</div>
+        <div style="font-size:11px;color:var(--t2,rgba(255,255,255,0.5));margin-top:2px">${email}</div>
+      </div>
+      <button onclick="doLogout()" style="
+        width:100%;padding:11px 14px;background:none;border:none;cursor:pointer;
+        display:flex;align-items:center;gap:10px;border-radius:10px;
+        color:var(--red,#f43f5e);font-size:14px;font-weight:700;font-family:inherit;
+        transition:background 0.2s;text-align:left;
+      " onmouseover="this.style.background='rgba(244,63,94,0.1)'" onmouseout="this.style.background='none'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Sair da conta
+      </button>
+    `;
+
+    document.body.appendChild(menu);
+
+    // Fecha ao clicar fora
+    setTimeout(() => {
+      document.addEventListener("click", function closeMenu(e) {
+        if (!menu.contains(e.target) && e.target.id !== "profileBtn") {
+          menu.remove();
+          document.removeEventListener("click", closeMenu);
+        }
+      });
+    }, 50);
+  }
+
+  function doLogout() {
+    fetch("http://localhost:3001/api/logout", { method: "POST", credentials: "include" })
+      .finally(() => { window.location.reload(); });
+  }
+</script>
+</body>
+</html>
