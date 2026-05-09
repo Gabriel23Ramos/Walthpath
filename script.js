@@ -5,13 +5,12 @@
 // FIREBASE CONFIG — substitua pelos seus valores do Firebase Console
 // ════════════════════════════════════════════════════════
 const FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyD2z0nnftdMBoZ_OHjJnEiMcbnmG5Bk-ew",
-  authDomain:        "wealth-path-2adeb.firebaseapp.com",
-  projectId:         "wealth-path-2adeb",
-  storageBucket:     "wealth-path-2adeb.firebasestorage.app",
-  messagingSenderId: "1033420606284",
-  appId:             "1:1033420606284:web:4ba880838f8ac860dc1de9",
-  measurementId:     "G-TC1RSVVC40"
+  apiKey:            "COLE_AQUI_SUA_API_KEY",
+  authDomain:        "COLE_AQUI.firebaseapp.com",
+  projectId:         "COLE_AQUI_SEU_PROJECT_ID",
+  storageBucket:     "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId:             "COLE_AQUI"
 };
 
 // Firebase SDK (carregado via CDN no HTML)
@@ -38,19 +37,36 @@ function initFirebase() {
   });
 }
 
-// Atualiza sidebar com info do usuário
+// Atualiza sidebar e topbar com info do usuário
 function updateSidebarUser(user) {
   const nameEl   = document.getElementById("sidebarName");
   const roleEl   = document.getElementById("sidebarRole");
   const avatarEl = document.getElementById("sidebarAvatar");
+  // topbar
+  const profileLabel  = document.getElementById("profileLabel");
+  const profileAvatar = document.getElementById("profileAvatar");
+
   if (user) {
-    if (nameEl)   nameEl.textContent   = user.displayName || user.email.split("@")[0];
+    const displayName = user.displayName || user.email.split("@")[0];
+    const initial     = displayName[0].toUpperCase();
+
+    if (nameEl)   nameEl.textContent   = displayName;
     if (roleEl)   roleEl.textContent   = user.email;
-    if (avatarEl) avatarEl.textContent = (user.displayName || user.email)[0].toUpperCase();
+    if (avatarEl) avatarEl.textContent = initial;
+
+    // topbar: mostra nome e avatar com inicial
+    if (profileLabel)  profileLabel.textContent  = displayName.split(" ")[0];
+    if (profileAvatar) profileAvatar.innerHTML =
+      `<span style="font-size:12px;font-weight:800;letter-spacing:-0.5px">${initial}</span>`;
   } else {
     if (nameEl)   nameEl.textContent   = "Visitante";
     if (roleEl)   roleEl.textContent   = "Não autenticado";
     if (avatarEl) avatarEl.textContent = "?";
+
+    // topbar: volta para ícone padrão e texto "Entrar"
+    if (profileLabel)  profileLabel.textContent  = "Entrar";
+    if (profileAvatar) profileAvatar.innerHTML =
+      `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
   }
 }
 
@@ -58,10 +74,15 @@ function updateSidebarUser(user) {
 async function handleProfileClick() {
   if (_isLoggedIn && _auth) {
     await _auth.signOut();
-    transactions = JSON.parse(localStorage.getItem("ff_tx")    || "[]");
-    goals        = JSON.parse(localStorage.getItem("ff_goals") || JSON.stringify(DEFAULT_GOALS));
-    debts        = JSON.parse(localStorage.getItem("ff_debts") || JSON.stringify(DEFAULT_DEBTS));
-    fixed        = JSON.parse(localStorage.getItem("ff_fixed") || JSON.stringify(DEFAULT_FIXED));
+    // Limpa localStorage e reseta para estado vazio (não demo)
+    localStorage.removeItem("ff_tx");
+    localStorage.removeItem("ff_goals");
+    localStorage.removeItem("ff_debts");
+    localStorage.removeItem("ff_fixed");
+    transactions = [];
+    goals        = [];
+    debts        = [];
+    fixed        = [];
     renderDashboard();
     showToast("Até logo! 👋", "ok");
   } else {
@@ -99,10 +120,11 @@ const DEFAULT_FIXED = [
   { id:5, name:'Academia', icon:'🏋️', day:1,  value:80    },
 ];
 
-let transactions = JSON.parse(localStorage.getItem('ff_tx')    || '[]');
-let goals        = JSON.parse(localStorage.getItem('ff_goals') || JSON.stringify(DEFAULT_GOALS));
-let debts        = JSON.parse(localStorage.getItem('ff_debts') || JSON.stringify(DEFAULT_DEBTS));
-let fixed        = JSON.parse(localStorage.getItem('ff_fixed') || JSON.stringify(DEFAULT_FIXED));
+// Estado inicial vazio — dados carregados da nuvem após login
+let transactions = [];
+let goals        = [];
+let debts        = [];
+let fixed        = [];
 
 // ── Funções de persistência inteligentes ──────────────
 async function saveCollection(name, data) {
