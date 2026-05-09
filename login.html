@@ -15,7 +15,8 @@
         }
 
         html, body { height:100%; width:100%; margin:0; padding:0; overflow:hidden; background:#000; }
-        *, *::before, *::after { box-sizing:border-box; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); }
+        *, *::before, *::after { box-sizing:border-box; }
+a, button, input, .btn-google, .btn-action, .btn-fallback { transition:transform 0.3s cubic-bezier(0.16,1,0.3,1), opacity 0.3s, box-shadow 0.3s, filter 0.3s, background 0.3s, border-color 0.3s; }
 
         body {
             font-family: 'Satoshi', sans-serif;
@@ -224,10 +225,10 @@
                     <div class="brand-tagline">Personal Finance</div>
                 </div>
                 <div class="social-section">
-                    <a class="btn-google" href="#" onclick="loginGoogle(); return false;">
+                    <button type="button" class="btn-google" onclick="loginGoogle()">
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20" alt="Google">
                         Entrar com Google
-                    </a>
+                    </button>
                 </div>
                 <div class="divider"><span>ou e-mail</span></div>
                 <form id="form">
@@ -345,8 +346,10 @@
         const auth = firebase.auth();
 
         auth.onAuthStateChanged(user => {
-            if (user && user.emailVerified) handleRedirection();
+            // Só redireciona se o usuário acabou de logar (não no carregamento inicial)
+            if (user && user.emailVerified && _justLoggedIn) handleRedirection();
         });
+        let _justLoggedIn = false;
 
         let isRegister   = false;
         let pendingEmail = "";
@@ -442,6 +445,7 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
                 await auth.signInWithPopup(provider);
+                _justLoggedIn = true;
                 handleRedirection();
             } catch(e) {
                 showError("Erro ao entrar com Google: " + e.message);
@@ -472,6 +476,7 @@
                         await auth.signOut();
                         showVerifyUI(email);
                     } else {
+                        _justLoggedIn = true;
                         handleRedirection();
                     }
                 }
