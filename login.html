@@ -4,359 +4,270 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>WealthPath — Premium Access</title>
-    
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;700;900&family=Satoshi:wght@300;400;500;700&display=swap" rel="stylesheet"/>
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         :root {
             --primary-gold: #D4AF37;
-            --gold-glow: rgba(212, 175, 55, 0.4);
             --glass-bg: rgba(5, 5, 5, 0.8);
             --glass-border: rgba(212, 175, 55, 0.15);
-            --text-main: #FFFFFF;
             --text-dim: rgba(255, 255, 255, 0.5);
         }
 
-        /* Perfect Full Screen - No Scroll */
-        html, body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background: #000;
-        }
-
-        *, *::before, *::after { 
-            box-sizing: border-box; 
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        html, body { height:100%; width:100%; margin:0; padding:0; overflow:hidden; background:#000; }
+        *, *::before, *::after { box-sizing:border-box; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); }
 
         body {
             font-family: 'Satoshi', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            position: relative;
+            display:flex; align-items:center; justify-content:flex-end; position:relative;
         }
 
-        /* Cinematic Background Image */
         .background-image {
-            position: absolute;
-            inset: 0;
+            position:absolute; inset:0;
             background-image: url('https://files.manuscdn.com/user_upload_by_module/session_file/310519663591056331/pLYBBhUYDzdCQwIR.png');
-            background-size: cover;
-            background-position: left center;
-            z-index: 0;
+            background-size:cover; background-position:left center; z-index:0;
         }
 
         .background-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
-            z-index: 1;
+            position:absolute; inset:0;
+            background:linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+            z-index:1;
         }
 
         .main-container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 10% 0 0;
+            position:relative; z-index:10;
+            width:100%; height:100%;
+            display:flex; align-items:center; justify-content:flex-end;
+            padding:0 10% 0 0;
         }
 
-        /* Ultra Stylish Glass Card */
         .login-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 40px;
-            padding: 60px 50px;
-            width: 100%;
-            max-width: 440px;
-            border: 1px solid var(--glass-border);
-            box-shadow: -20px 40px 100px rgba(0, 0, 0, 0.8);
-            text-align: center;
-            animation: slideInRight 1s ease-out;
+            background:var(--glass-bg);
+            backdrop-filter:blur(40px) saturate(180%);
+            -webkit-backdrop-filter:blur(40px) saturate(180%);
+            border-radius:40px; padding:60px 50px;
+            width:100%; max-width:440px;
+            border:1px solid var(--glass-border);
+            box-shadow:-20px 40px 100px rgba(0,0,0,0.8);
+            text-align:center;
+            animation:slideInRight 1s ease-out;
         }
 
         @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
+            from { opacity:0; transform:translateX(50px); }
+            to   { opacity:1; transform:translateX(0); }
         }
 
-        .brand-header {
-            margin-bottom: 40px;
-        }
-
+        .brand-header { margin-bottom:40px; }
         .brand-title {
-            font-family: 'Cabinet Grotesk', sans-serif;
-            font-size: 36px;
-            font-weight: 900;
-            letter-spacing: -1.5px;
-            margin-bottom: 4px;
-            color: #FFFFFF;
+            font-family:'Cabinet Grotesk',sans-serif;
+            font-size:36px; font-weight:900; letter-spacing:-1.5px;
+            margin-bottom:4px; color:#fff;
         }
-        .brand-title span { color: var(--primary-gold); }
-
+        .brand-title span { color:var(--primary-gold); }
         .brand-tagline {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            color: var(--text-dim);
+            font-size:11px; font-weight:700; text-transform:uppercase;
+            letter-spacing:5px; color:var(--text-dim);
         }
 
-        .social-section { margin-bottom: 30px; }
-        
+        .social-section { margin-bottom:30px; }
+
         .btn-google {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 18px;
-            background: #FFFFFF;
-            color: #000000;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display:flex; justify-content:center; align-items:center; gap:12px;
+            width:100%; padding:18px; background:#fff; color:#000;
+            border-radius:20px; text-decoration:none;
+            font-weight:800; font-size:15px;
+            box-shadow:0 10px 20px rgba(0,0,0,0.2);
         }
-        .btn-google:hover {
-            transform: translateY(-3px);
-            background: #f8f8f8;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        }
+        .btn-google:hover { transform:translateY(-3px); background:#f8f8f8; box-shadow:0 15px 30px rgba(0,0,0,0.3); }
 
         .divider {
-            display: flex;
-            align-items: center;
-            margin: 30px 0;
-            color: var(--text-dim);
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
+            display:flex; align-items:center; margin:30px 0;
+            color:var(--text-dim); font-size:10px; text-transform:uppercase; letter-spacing:4px;
         }
-        .divider::before, .divider::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .divider span { padding: 0 20px; }
+        .divider::before, .divider::after { content:""; flex:1; height:1px; background:rgba(255,255,255,0.1); }
+        .divider span { padding:0 20px; }
 
-        .field-group {
-            position: relative;
-            margin-bottom: 16px;
-            text-align: left;
-        }
-
+        .field-group { position:relative; margin-bottom:16px; text-align:left; }
         .field-group i {
-            position: absolute;
-            left: 22px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary-gold);
-            opacity: 0.6;
-            font-size: 16px;
+            position:absolute; left:22px; top:50%; transform:translateY(-50%);
+            color:var(--primary-gold); opacity:0.6; font-size:16px;
         }
 
         input {
-            width: 100%;
-            padding: 20px 24px 20px 64px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            color: white;
-            font-family: 'Satoshi', sans-serif;
-            font-size: 16px;
-            outline: none;
+            width:100%; padding:20px 24px 20px 64px;
+            background:rgba(255,255,255,0.03);
+            border:1px solid rgba(255,255,255,0.06);
+            border-radius:20px; color:white;
+            font-family:'Satoshi',sans-serif; font-size:16px; outline:none;
         }
-
         input:focus {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+            background:rgba(255,255,255,0.06);
+            border-color:var(--primary-gold);
+            box-shadow:0 0 20px rgba(212,175,55,0.15);
         }
 
         .btn-action {
-            width: 100%;
-            padding: 20px;
-            margin-top: 15px;
-            border-radius: 20px;
-            border: none;
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
-            color: #000;
-            font-weight: 900;
-            font-size: 17px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.25);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            width:100%; padding:20px; margin-top:15px;
+            border-radius:20px; border:none;
+            background:linear-gradient(135deg,#D4AF37,#B8860B);
+            color:#000; font-weight:900; font-size:17px; cursor:pointer;
+            display:flex; align-items:center; justify-content:center; gap:12px;
+            box-shadow:0 20px 40px rgba(212,175,55,0.25);
+            text-transform:uppercase; letter-spacing:1px;
         }
+        .btn-action:hover { transform:translateY(-4px); filter:brightness(1.1); box-shadow:0 25px 50px rgba(212,175,55,0.4); }
 
-        .btn-action:hover {
-            transform: translateY(-4px);
-            filter: brightness(1.1);
-            box-shadow: 0 25px 50px rgba(212, 175, 55, 0.4);
-        }
+        .card-footer { margin-top:40px; font-size:15px; color:var(--text-dim); }
+        .card-footer span { color:var(--primary-gold); font-weight:800; cursor:pointer; margin-left:6px; }
 
-        .card-footer {
-            margin-top: 40px;
-            font-size: 15px;
-            color: var(--text-dim);
-        }
-        .card-footer span {
-            color: var(--primary-gold);
-            font-weight: 800;
-            cursor: pointer;
-            margin-left: 6px;
-        }
-
-        /* Success/Redirection UI */
+        /* ══ SUCCESS UI — CORRIGIDO ══ */
         #successUI {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            animation: fadeIn 0.5s ease-out;
+            display:none;
+            flex-direction:column;
+            align-items:center;
+            gap:16px;
+            padding:10px 0;
+            animation:fadeIn 0.5s ease-out;
         }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .success-icon {
-            font-size: 50px;
-            color: #10b981;
-            margin-bottom: 10px;
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+        .success-icon-wrap {
+            width:90px; height:90px; border-radius:50%;
+            background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(16,185,129,0.05));
+            border:1px solid rgba(16,185,129,0.4);
+            display:flex; align-items:center; justify-content:center;
+            font-size:40px; color:#10b981;
+            box-shadow:0 0 50px rgba(16,185,129,0.25);
+            margin-bottom:8px;
+        }
+
+        #successUI h2 {
+            font-family:'Cabinet Grotesk',sans-serif;
+            font-size:28px; font-weight:900; letter-spacing:-0.5px;
+            color:#ffffff; margin:0;
+        }
+
+        #successUI .success-sub {
+            color:rgba(255,255,255,0.5);
+            font-size:14px; margin:0; line-height:1.7;
         }
 
         .btn-fallback {
-            padding: 15px 30px;
-            background: var(--primary-gold);
-            color: #000;
-            border-radius: 15px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 14px;
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+            display:inline-flex; align-items:center; gap:10px;
+            padding:16px 32px;
+            background:linear-gradient(135deg,#D4AF37,#B8860B);
+            color:#000; border-radius:20px; text-decoration:none;
+            font-weight:900; font-size:14px;
+            letter-spacing:1px; text-transform:uppercase;
+            box-shadow:0 10px 30px rgba(212,175,55,0.3);
+            margin-top:8px;
+        }
+        .btn-fallback:hover { transform:translateY(-3px); box-shadow:0 16px 40px rgba(212,175,55,0.45); filter:brightness(1.08); }
+
+        .success-hint { font-size:12px; color:rgba(255,255,255,0.25); margin:0; }
+
+        .loading-dots::after {
+            content:'';
+            animation:dots 1.5s steps(4,end) infinite;
+        }
+        @keyframes dots {
+            0%   { content:''; }
+            25%  { content:'.'; }
+            50%  { content:'..'; }
+            75%  { content:'...'; }
+            100% { content:''; }
         }
 
         /* Error Toast */
         .error-toast {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            background: rgba(220, 38, 38, 0.95);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: 700;
-            display: none;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            animation: slideDown 0.4s ease-out;
+            position:absolute; top:40px; right:40px;
+            background:rgba(220,38,38,0.95); color:white;
+            padding:15px 30px; border-radius:50px;
+            font-size:15px; font-weight:700;
+            display:none; z-index:100;
+            backdrop-filter:blur(10px);
+            box-shadow:0 20px 40px rgba(0,0,0,0.5);
+            animation:slideDown 0.4s ease-out;
         }
-        @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideDown {
+            from { transform:translateY(-50px); opacity:0; }
+            to   { transform:translateY(0); opacity:1; }
+        }
 
-        @media (max-width: 900px) {
-            .main-container { justify-content: center; padding: 20px; }
-            .background-overlay { background: rgba(0,0,0,0.6); }
-            .login-card { max-width: 400px; padding: 45px 35px; }
+        @media (max-width:900px) {
+            .main-container { justify-content:center; padding:20px; }
+            .background-overlay { background:rgba(0,0,0,0.6); }
+            .login-card { max-width:400px; padding:45px 35px; }
         }
     </style>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
 
 <body>
-
     <div class="background-image"></div>
     <div class="background-overlay"></div>
-    
+
     <div class="error-toast" id="errorMsg">
         <i class="fas fa-lock"></i> Acesso negado. Verifique os dados.
     </div>
 
     <div class="main-container">
         <div class="login-card">
-            <!-- Normal Login Form -->
+
+            <!-- Login Form -->
             <div id="loginContent">
                 <div class="brand-header">
                     <div class="brand-title">Wealth<span>Path</span></div>
                     <div class="brand-tagline">Personal Finance</div>
                 </div>
-
                 <div class="social-section">
                     <a class="btn-google" href="#" onclick="loginGoogle(); return false;">
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20" alt="Google">
                         Entrar com Google
                     </a>
                 </div>
-
-                <div class="divider">
-                    <span>ou e-mail</span>
-                </div>
-
+                <div class="divider"><span>ou e-mail</span></div>
                 <form id="form">
                     <div class="field-group" id="nameGroup" style="display:none">
                         <i class="fas fa-user-tie"></i>
-                        <input type="text" id="name" placeholder="Nome Completo" />
+                        <input type="text" id="name" placeholder="Nome Completo"/>
                     </div>
-
                     <div class="field-group">
                         <i class="fas fa-envelope-open-text"></i>
-                        <input type="email" id="email" placeholder="Endereço de E-mail" required />
+                        <input type="email" id="email" placeholder="Endereço de E-mail" required/>
                     </div>
-
                     <div class="field-group">
                         <i class="fas fa-fingerprint"></i>
-                        <input type="password" id="password" placeholder="Senha de Acesso" required />
+                        <input type="password" id="password" placeholder="Senha de Acesso" required/>
                     </div>
-
                     <div id="forgotLink" style="text-align:right;margin:-6px 0 14px;">
-                        <span onclick="showForgotUI()" style="font-size:12px;color:rgba(255,255,255,0.35);cursor:pointer;transition:color 0.2s;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
+                        <span onclick="showForgotUI()" style="font-size:12px;color:rgba(255,255,255,0.35);cursor:pointer;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
                             Esqueci minha senha
                         </span>
                     </div>
-
                     <button type="submit" class="btn-action">
                         <span id="btnText">ENTRAR AGORA</span>
                         <i class="fas fa-arrow-right"></i>
                     </button>
                 </form>
-
                 <div class="card-footer" onclick="toggleMode()" id="toggleContainer">
                     Ainda não é membro? <span id="toggleText">Criar agora</span>
                 </div>
             </div>
 
-            <!-- ── Tela: Esqueci a senha ── -->
-            <div id="forgotUI" style="display:none;flex-direction:column;align-items:center;width:100%;animation:fadeIn 0.4s ease-out">
-                <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));border:1px solid rgba(212,175,55,0.25);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px;box-shadow:0 0 40px rgba(212,175,55,0.12);">🔑</div>
-                <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:900;letter-spacing:-0.5px;color:#fff;margin-bottom:10px;text-align:center;">Recuperar senha</div>
-                <p style="margin:0 0 28px;color:rgba(255,255,255,0.45);font-size:14px;text-align:center;line-height:1.7;">
-                    Digite seu e-mail e enviaremos um link<br>para criar uma nova senha.
-                </p>
+            <!-- Esqueci a senha -->
+            <div id="forgotUI" style="display:none;flex-direction:column;align-items:center;width:100%;">
+                <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));border:1px solid rgba(212,175,55,0.25);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px;">🔑</div>
+                <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:10px;text-align:center;">Recuperar senha</div>
+                <p style="margin:0 0 28px;color:rgba(255,255,255,0.45);font-size:14px;text-align:center;line-height:1.7;">Digite seu e-mail e enviaremos um link<br>para criar uma nova senha.</p>
                 <div style="position:relative;width:100%;margin-bottom:20px;">
                     <i class="fas fa-envelope-open-text" style="position:absolute;left:22px;top:50%;transform:translateY(-50%);color:#d4af37;opacity:0.6;font-size:16px;"></i>
-                    <input type="email" id="forgotEmail" placeholder="Seu e-mail cadastrado" style="width:100%;padding:20px 24px 20px 64px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;color:white;font-family:'Satoshi',sans-serif;font-size:16px;outline:none;"/>
+                    <input type="email" id="forgotEmail" placeholder="Seu e-mail cadastrado" style="width:100%;padding:20px 24px 20px 64px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;color:white;font-size:16px;outline:none;"/>
                 </div>
-                <button onclick="sendForgotEmail()" id="forgotBtn" style="width:100%;padding:18px;border-radius:20px;border:none;background:linear-gradient(135deg,#D4AF37,#B8860B);color:#000;font-weight:900;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 16px 36px rgba(212,175,55,0.2);font-family:'Satoshi',sans-serif;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px;">
+                <button onclick="sendForgotEmail()" id="forgotBtn" style="width:100%;padding:18px;border-radius:20px;border:none;background:linear-gradient(135deg,#D4AF37,#B8860B);color:#000;font-weight:900;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Satoshi',sans-serif;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px;">
                     <i class="fas fa-paper-plane"></i> Enviar link de recuperação
                 </button>
                 <div onclick="showLoginForm()" style="font-size:13px;color:rgba(255,255,255,0.35);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
@@ -364,10 +275,10 @@
                 </div>
             </div>
 
-            <!-- ── Tela: Link enviado ── -->
-            <div id="forgotSentUI" style="display:none;flex-direction:column;align-items:center;width:100%;animation:fadeIn 0.4s ease-out">
+            <!-- Link enviado -->
+            <div id="forgotSentUI" style="display:none;flex-direction:column;align-items:center;width:100%;">
                 <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05));border:1px solid rgba(16,185,129,0.3);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px;">✉️</div>
-                <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:900;letter-spacing:-0.5px;color:#fff;margin-bottom:10px;text-align:center;">Link enviado!</div>
+                <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:10px;text-align:center;">Link enviado!</div>
                 <p style="margin:0 0 28px;color:rgba(255,255,255,0.45);font-size:14px;text-align:center;line-height:1.7;">
                     Verifique sua caixa de entrada em<br>
                     <strong id="forgotEmailDisplay" style="color:#d4af37;font-weight:700;"></strong>
@@ -375,8 +286,8 @@
                 <div style="width:100%;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.18);border-radius:18px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-bottom:28px;">
                     <div style="width:36px;height:36px;border-radius:10px;flex-shrink:0;background:rgba(212,175,55,0.12);display:flex;align-items:center;justify-content:center;font-size:18px;">⏱️</div>
                     <div>
-                        <div style="font-size:13px;font-weight:700;color:#f5f0e8;margin-bottom:2px">O link expira em 1 hora</div>
-                        <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5">Verifique também a pasta <span style="color:rgba(255,255,255,0.7);font-weight:600">Spam / Lixo eletrônico</span></div>
+                        <div style="font-size:13px;font-weight:700;color:#f5f0e8;margin-bottom:2px;">O link expira em 1 hora</div>
+                        <div style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5;">Verifique também a pasta <span style="color:rgba(255,255,255,0.7);font-weight:600;">Spam / Lixo eletrônico</span></div>
                     </div>
                 </div>
                 <div onclick="showLoginForm()" style="font-size:13px;color:rgba(255,255,255,0.35);cursor:pointer;display:flex;align-items:center;gap:6px;" onmouseover="this.style.color='rgba(212,175,55,0.8)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
@@ -384,63 +295,59 @@
                 </div>
             </div>
 
-            <!-- ── Tela: Nova senha (via link do email) ── -->
-            <div id="resetUI" style="display:none;flex-direction:column;align-items:center;width:100%;animation:fadeIn 0.4s ease-out">
-                <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));border:1px solid rgba(212,175,55,0.25);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px;box-shadow:0 0 40px rgba(212,175,55,0.12);">🔒</div>
-                <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:900;letter-spacing:-0.5px;color:#fff;margin-bottom:10px;text-align:center;">Nova senha</div>
-                <p style="margin:0 0 24px;color:rgba(255,255,255,0.45);font-size:14px;text-align:center;line-height:1.7;">
-                    Crie uma senha forte com pelo menos 6 caracteres.
-                </p>
+            <!-- Nova senha -->
+            <div id="resetUI" style="display:none;flex-direction:column;align-items:center;width:100%;">
+                <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));border:1px solid rgba(212,175,55,0.25);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px;">🔒</div>
+                <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:10px;text-align:center;">Nova senha</div>
+                <p style="margin:0 0 24px;color:rgba(255,255,255,0.45);font-size:14px;text-align:center;line-height:1.7;">Crie uma senha forte com pelo menos 6 caracteres.</p>
                 <div style="position:relative;width:100%;margin-bottom:14px;">
                     <i class="fas fa-lock" style="position:absolute;left:22px;top:50%;transform:translateY(-50%);color:#d4af37;opacity:0.6;font-size:16px;"></i>
-                    <input type="password" id="newPassword" placeholder="Nova senha" style="width:100%;padding:20px 24px 20px 64px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;color:white;font-family:'Satoshi',sans-serif;font-size:16px;outline:none;"/>
+                    <input type="password" id="newPassword" placeholder="Nova senha" style="width:100%;padding:20px 24px 20px 64px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;color:white;font-size:16px;outline:none;"/>
                 </div>
                 <div style="position:relative;width:100%;margin-bottom:20px;">
                     <i class="fas fa-lock" style="position:absolute;left:22px;top:50%;transform:translateY(-50%);color:#d4af37;opacity:0.6;font-size:16px;"></i>
-                    <input type="password" id="confirmPassword" placeholder="Confirmar nova senha" style="width:100%;padding:20px 24px 20px 64px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;color:white;font-family:'Satoshi',sans-serif;font-size:16px;outline:none;"/>
+                    <input type="password" id="confirmPassword" placeholder="Confirmar nova senha" style="width:100%;padding:20px 24px 20px 64px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:20px;color:white;font-size:16px;outline:none;"/>
                 </div>
-                <button onclick="submitNewPassword()" id="resetBtn" style="width:100%;padding:18px;border-radius:20px;border:none;background:linear-gradient(135deg,#D4AF37,#B8860B);color:#000;font-weight:900;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 16px 36px rgba(212,175,55,0.2);font-family:'Satoshi',sans-serif;text-transform:uppercase;letter-spacing:1px;">
+                <button onclick="submitNewPassword()" style="width:100%;padding:18px;border-radius:20px;border:none;background:linear-gradient(135deg,#D4AF37,#B8860B);color:#000;font-weight:900;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Satoshi',sans-serif;text-transform:uppercase;letter-spacing:1px;">
                     <i class="fas fa-check"></i> Salvar nova senha
                 </button>
             </div>
 
-            <!-- Success UI with Manual Redirection Fallback -->
+            <!-- ══ SUCCESS UI CORRIGIDO ══ -->
             <div id="successUI">
-                <div class="success-icon"><i class="fas fa-check-circle"></i></div>
-                <h2 style="margin-bottom: 10px;">Acesso Autorizado</h2>
-                <p style="color: var(--text-dim); margin-bottom: 30px; font-size: 14px;">Redirecionando para sua conta...</p>
-                <a href="./" class="btn-fallback">ENTRAR MANUALMENTE</a>
-                <p style="margin-top: 20px; font-size: 12px; color: var(--text-dim);">Clique no botão acima se não for redirecionado.</p>
+                <div class="success-icon-wrap">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2>Acesso Autorizado</h2>
+                <p class="success-sub">Redirecionando para sua conta<span class="loading-dots"></span></p>
+                <a href="./" class="btn-fallback">
+                    <i class="fas fa-arrow-right"></i>
+                    Entrar Manualmente
+                </a>
+                <p class="success-hint">Clique acima se não for redirecionado automaticamente</p>
             </div>
+
         </div>
     </div>
 
     <script>
-        // ══════════════════════════════════════════════════
-        // FIREBASE CONFIG — substitua pelos seus valores
-        // ══════════════════════════════════════════════════
         const FIREBASE_CONFIG = {
-          apiKey:            "AIzaSyD2z0nnftdMBoZ_OHjJnEiMcbnmG5Bk-ew",
-          authDomain:        "wealth-path-2adeb.firebaseapp.com",
-          projectId:         "wealth-path-2adeb",
-          storageBucket:     "wealth-path-2adeb.firebasestorage.app",
-          messagingSenderId: "1033420606284",
-          appId:             "1:1033420606284:web:4ba880838f8ac860dc1de9",
-          measurementId:     "G-TC1RSVVC40"
+            apiKey:            "AIzaSyD2z0nnftdMBoZ_OHjJnEiMcbnmG5Bk-ew",
+            authDomain:        "wealth-path-2adeb.firebaseapp.com",
+            projectId:         "wealth-path-2adeb",
+            storageBucket:     "wealth-path-2adeb.firebasestorage.app",
+            messagingSenderId: "1033420606284",
+            appId:             "1:1033420606284:web:4ba880838f8ac860dc1de9",
+            measurementId:     "G-TC1RSVVC40"
         };
 
         firebase.initializeApp(FIREBASE_CONFIG);
         const auth = firebase.auth();
 
-        // Verifica se já está logado
         auth.onAuthStateChanged(user => {
-          if (user && user.emailVerified) handleRedirection();
-          else if (user && !user.emailVerified) {
-            // Usuário existe mas não verificou email
-          }
+            if (user && user.emailVerified) handleRedirection();
         });
 
-        // ── Estado ──
         let isRegister   = false;
         let pendingEmail = "";
 
@@ -456,18 +363,18 @@
         const errorMsg        = document.getElementById("errorMsg");
         const forgotLink      = document.getElementById("forgotLink");
 
-        // Tela de verificação
+        // Tela de verificação de e-mail
         const verifyUI = document.createElement("div");
         verifyUI.id = "verifyUI";
-        verifyUI.style.cssText = "display:none;flex-direction:column;align-items:center;width:100%;animation:fadeIn 0.4s ease-out";
+        verifyUI.style.cssText = "display:none;flex-direction:column;align-items:center;width:100%;";
         verifyUI.innerHTML = `
-            <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));border:1px solid rgba(212,175,55,0.25);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px;box-shadow:0 0 40px rgba(212,175,55,0.12);">✉️</div>
-            <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:900;letter-spacing:-0.5px;color:#fff;margin-bottom:10px;text-align:center;">Verifique seu e-mail</div>
+            <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(212,175,55,0.05));border:1px solid rgba(212,175,55,0.25);display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:24px;">✉️</div>
+            <div style="font-family:'Cabinet Grotesk',sans-serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:10px;text-align:center;">Verifique seu e-mail</div>
             <p style="margin:0 0 28px;color:rgba(255,255,255,0.45);font-size:14px;text-align:center;line-height:1.7;">
                 Enviamos um link de confirmação para<br>
                 <strong id="verifyEmailDisplay" style="color:#d4af37;font-weight:700;"></strong>
             </p>
-            <button id="resendBtn" onclick="resendVerification()" style="width:100%;padding:18px;border-radius:20px;border:none;background:linear-gradient(135deg,#D4AF37,#B8860B);color:#000;font-weight:900;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 16px 36px rgba(212,175,55,0.2);font-family:'Satoshi',sans-serif;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px;">
+            <button id="resendBtn" onclick="resendVerification()" style="width:100%;padding:18px;border-radius:20px;border:none;background:linear-gradient(135deg,#D4AF37,#B8860B);color:#000;font-weight:900;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;font-family:'Satoshi',sans-serif;text-transform:uppercase;letter-spacing:1px;margin-bottom:20px;">
                 <i class="fas fa-paper-plane"></i> Reenviar e-mail
             </button>
             <div onclick="showLoginForm()" style="font-size:13px;color:rgba(255,255,255,0.35);cursor:pointer;display:flex;align-items:center;gap:6px;">
@@ -476,9 +383,6 @@
         `;
         document.querySelector(".login-card").appendChild(verifyUI);
 
-        // ════════════════════════════════════
-        // NAVEGAÇÃO ENTRE TELAS
-        // ════════════════════════════════════
         function showAllHidden() {
             [loginContent, successUI, verifyUI,
              document.getElementById("forgotUI"),
@@ -515,12 +419,9 @@
         function handleRedirection() {
             showAllHidden();
             successUI.style.display = "flex";
-            setTimeout(() => { window.location.href = "./"; }, 1500);
+            setTimeout(() => { window.location.href = "./"; }, 2000);
         }
 
-        // ════════════════════════════════════
-        // TOGGLE REGISTRO / LOGIN
-        // ════════════════════════════════════
         function toggleMode() {
             isRegister = !isRegister;
             nameGroup.style.display  = isRegister ? "block" : "none";
@@ -537,9 +438,6 @@
             hideError();
         }
 
-        // ════════════════════════════════════
-        // LOGIN COM GOOGLE
-        // ════════════════════════════════════
         async function loginGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             try {
@@ -550,9 +448,6 @@
             }
         }
 
-        // ════════════════════════════════════
-        // SUBMIT — LOGIN / REGISTRO
-        // ════════════════════════════════════
         document.getElementById("form").addEventListener("submit", async (e) => {
             e.preventDefault();
             hideError();
@@ -567,13 +462,11 @@
 
             try {
                 if (isRegister) {
-                    // Criar conta
                     const cred = await auth.createUserWithEmailAndPassword(email, password);
                     if (name) await cred.user.updateProfile({ displayName: name });
                     await cred.user.sendEmailVerification();
                     showVerifyUI(email);
                 } else {
-                    // Login
                     const cred = await auth.signInWithEmailAndPassword(email, password);
                     if (!cred.user.emailVerified) {
                         await auth.signOut();
@@ -584,12 +477,12 @@
                 }
             } catch(e) {
                 const msgs = {
-                    "auth/user-not-found":    "E-mail não cadastrado.",
-                    "auth/wrong-password":     "Senha incorreta.",
-                    "auth/email-already-in-use": "E-mail já cadastrado. Faça login.",
-                    "auth/weak-password":      "Senha fraca. Mínimo 6 caracteres.",
-                    "auth/invalid-email":      "E-mail inválido.",
-                    "auth/too-many-requests":  "Muitas tentativas. Tente mais tarde.",
+                    "auth/user-not-found":       "E-mail não cadastrado.",
+                    "auth/wrong-password":        "Senha incorreta.",
+                    "auth/email-already-in-use":  "E-mail já cadastrado. Faça login.",
+                    "auth/weak-password":         "Senha fraca. Mínimo 6 caracteres.",
+                    "auth/invalid-email":         "E-mail inválido.",
+                    "auth/too-many-requests":     "Muitas tentativas. Tente mais tarde.",
                 };
                 showError(msgs[e.code] || e.message);
             } finally {
@@ -598,9 +491,6 @@
             }
         });
 
-        // ════════════════════════════════════
-        // REENVIAR VERIFICAÇÃO
-        // ════════════════════════════════════
         async function resendVerification() {
             const btn = document.getElementById("resendBtn");
             btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Enviando...";
@@ -620,9 +510,6 @@
             }
         }
 
-        // ════════════════════════════════════
-        // ESQUECI A SENHA (Firebase)
-        // ════════════════════════════════════
         async function sendForgotEmail() {
             const email = document.getElementById("forgotEmail").value.trim();
             if (!email) return showError("Digite seu e-mail.");
@@ -641,12 +528,8 @@
             }
         }
 
-        // submitNewPassword não é mais necessário — Firebase cuida pelo link de email
         function submitNewPassword() { showLoginForm(); }
 
-        // ════════════════════════════════════
-        // TOASTS
-        // ════════════════════════════════════
         function showError(msg) {
             errorMsg.style.background = "rgba(220,38,38,0.95)";
             errorMsg.innerHTML = `<i class="fas fa-lock"></i> ${msg || "Acesso negado."}`;
@@ -662,9 +545,6 @@
         }
 
         function hideError() { errorMsg.style.display = "none"; }
-
-        // Firebase: verificado via onAuthStateChanged acima
-</script>
-
+    </script>
 </body>
 </html>
