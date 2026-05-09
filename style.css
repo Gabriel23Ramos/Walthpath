@@ -2418,3 +2418,30 @@ body {
 [data-theme="light"] .sidebar-dev-footer {
   background: rgba(0,0,0,.03);
 }
+@media (max-width: 768px) {
+  .sidebar {
+    /* iOS Safari: 100vh inclui a barra do browser, dvh corrige isso */
+    height: 100dvh !important;
+    height: -webkit-fill-available !important;
+ 
+    /* Scroll funcional no iPhone */
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+ 
+    /* Espaço para a home bar do iPhone 14 */
+    padding-bottom: max(24px, env(safe-area-inset-bottom, 24px)) !important;
+  }
+ 
+  /* nav cresce e empurra o resto para baixo */
+  .sidebar-nav {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+  }
+ 
+  /* Itens do rodapé da sidebar nunca encolhem */
+  .theme-picker,
+  .sidebar-user,
+  .sidebar-dev-footer {
+    flex-shrink: 0 !important;
+  }
+}
