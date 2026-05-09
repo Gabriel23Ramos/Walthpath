@@ -5,12 +5,13 @@
 // FIREBASE CONFIG — substitua pelos seus valores do Firebase Console
 // ════════════════════════════════════════════════════════
 const FIREBASE_CONFIG = {
-  apiKey:            "COLE_AQUI_SUA_API_KEY",
-  authDomain:        "COLE_AQUI.firebaseapp.com",
-  projectId:         "COLE_AQUI_SEU_PROJECT_ID",
-  storageBucket:     "COLE_AQUI.appspot.com",
-  messagingSenderId: "COLE_AQUI",
-  appId:             "COLE_AQUI"
+  apiKey:            "AIzaSyD2z0nnftdMBoZ_OHjJnEiMcbnmG5Bk-ew",
+  authDomain:        "wealth-path-2adeb.firebaseapp.com",
+  projectId:         "wealth-path-2adeb",
+  storageBucket:     "wealth-path-2adeb.firebasestorage.app",
+  messagingSenderId: "1033420606284",
+  appId:             "1:1033420606284:web:4ba880838f8ac860dc1de9",
+  measurementId:     "G-TC1RSVVC40"
 };
 
 // Firebase SDK (carregado via CDN no HTML)
