@@ -564,17 +564,16 @@
     <div id="cardItensList"></div>
     </div><!-- end scroll wrapper -->
   </div>
-
-  <!-- ══ RODAPÉ ══ -->
-  <footer class="site-footer">
-    <span>Desenvolvido por</span>
-    <a href="https://www.linkedin.com/in/gabrielramosdev" target="_blank" rel="noopener noreferrer" class="footer-link">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-      gabrielramosdev
-    </a>
-  </footer>
-
 </div>
+
+<!-- ══ RODAPÉ ══ -->
+<footer class="site-footer">
+  <span>Desenvolvido por</span>
+  <a href="https://www.linkedin.com/in/gabrielramosdev" target="_blank" rel="noopener noreferrer" class="footer-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    gabrielramosdev
+  </a>
+</footer>
 
 <!-- ══ MODAL: GASTO FIXO ══ -->
 <div class="overlay" id="fixedOverlay" onclick="if(event.target.id==='fixedOverlay')closeFixedModal()">
@@ -618,6 +617,118 @@
 <div class="toast-wrap" id="toastWrap"></div>
 <script src="script.js"></script>
 
-<!-- Firebase auth é gerenciado pelo script.js via initFirebase() -->
+<script>
+  // Firebase cuida de tudo via onAuthStateChanged em script.js
+  // initFirebase() é chamado automaticamente pelo window.load em script.js
+
+  // Verifica sessão ao carregar — sem redirecionar
+  fetch("http://localhost:3001/api/auth/me", { credentials: "include" })
+    .then(res => res.json())
+    .then(data => {
+      if (data.logado) {
+        _currentUser  = data.usuario;
+        _isLoggedIn   = true;
+        updateProfileBtn(data.usuario);
+        loadCloudData(); // carrega dados do MongoDB
+      }
+      // Se não estiver logado, apenas mostra "Entrar" — não redireciona
+    })
+    .catch(() => {
+      // Sem servidor: apenas mostra "Entrar"
+    });
+
+  function updateProfileBtn(usuario) {
+    const label = document.getElementById("profileLabel");
+    const avatar = document.getElementById("profileAvatar");
+    const sAvatar = document.getElementById("sidebarAvatar");
+    const sName = document.getElementById("sidebarName");
+    const sRole = document.getElementById("sidebarRole");
+
+    // Iniciais
+    const initials = (usuario.name || usuario.email || "?")
+      .split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();
+    const firstName = usuario.name ? usuario.name.split(" ")[0] : usuario.email;
+
+    // Topbar
+    if (label) label.textContent = firstName;
+    if (avatar) {
+      if (usuario.avatar) {
+        avatar.innerHTML = `<img src="${usuario.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" alt="avatar">`;
+      } else {
+        avatar.innerHTML = `<span style="font-size:12px;font-weight:800;letter-spacing:-0.5px">${initials}</span>`;
+      }
+    }
+
+    // Sidebar
+    if (sAvatar) sAvatar.textContent = initials;
+    if (sName) sName.textContent = usuario.name || usuario.email;
+    if (sRole) sRole.textContent = "Autenticado";
+  }
+
+  function handleProfileClick() {
+    if (_currentUser) {
+      // Usuário logado: mostra mini menu
+      showProfileMenu();
+    } else {
+      // Não logado: vai para login
+      window.location.href = "login.html";
+    }
+  }
+
+  function showProfileMenu() {
+    // Remove menu anterior se existir
+    const old = document.getElementById("profileMenu");
+    if (old) { old.remove(); return; }
+
+    const btn = document.getElementById("profileBtn");
+    const rect = btn.getBoundingClientRect();
+
+    const menu = document.createElement("div");
+    menu.id = "profileMenu";
+    menu.style.cssText = `
+      position:fixed; top:${rect.bottom + 10}px; right:${window.innerWidth - rect.right}px;
+      background:var(--surface2,#1a1a3e); border:1px solid rgba(255,255,255,0.1);
+      border-radius:16px; padding:8px; min-width:200px; z-index:9999;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5); backdrop-filter:blur(20px);
+      animation: fadeInDown 0.2s ease-out;
+    `;
+
+    const name = _currentUser.name || _currentUser.email;
+    const email = _currentUser.email;
+
+    menu.innerHTML = `
+      <div style="padding:12px 14px 10px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:6px">
+        <div style="font-weight:800;font-size:14px;color:var(--t1,#fff)">${name}</div>
+        <div style="font-size:11px;color:var(--t2,rgba(255,255,255,0.5));margin-top:2px">${email}</div>
+      </div>
+      <button onclick="doLogout()" style="
+        width:100%;padding:11px 14px;background:none;border:none;cursor:pointer;
+        display:flex;align-items:center;gap:10px;border-radius:10px;
+        color:var(--red,#f43f5e);font-size:14px;font-weight:700;font-family:inherit;
+        transition:background 0.2s;text-align:left;
+      " onmouseover="this.style.background='rgba(244,63,94,0.1)'" onmouseout="this.style.background='none'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        Sair da conta
+      </button>
+    `;
+
+    document.body.appendChild(menu);
+
+    // Fecha ao clicar fora
+    setTimeout(() => {
+      document.addEventListener("click", function closeMenu(e) {
+        if (!menu.contains(e.target) && e.target.id !== "profileBtn") {
+          menu.remove();
+          document.removeEventListener("click", closeMenu);
+        }
+      });
+    }, 50);
+  }
+
+  function doLogout() {
+    fetch("http://localhost:3001/api/logout", { method: "POST", credentials: "include" })
+      .finally(() => { window.location.reload(); });
+  }
+</script>
 </body>
 </html>
