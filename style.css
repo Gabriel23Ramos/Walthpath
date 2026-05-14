@@ -1997,7 +1997,22 @@ body {
    ZERO backdrop-filter em qualquer lugar no mobile.
    ══════════════════════════════════════════════════ */
 
-/* Overlay simples — aparece atrás da sidebar */
+/* ══════════════════════════════════════════════════
+   STYLE.CSS — PATCH MOBILE COMPLETO
+   
+   COMO APLICAR:
+   1. Abra seu style.css
+   2. Pressione Ctrl+H (Find & Replace)
+   3. Encontre: /* Overlay simples — aparece atrás da sidebar */
+   4. Selecione desse ponto até o FINAL do arquivo
+   5. Substitua por TODO o conteúdo abaixo
+   ══════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════
+   MOBILE FIX COMPLETO — substituir todo o bloco
+   @media (max-width: 768px) existente no style.css
+   ══════════════════════════════════════════════════ */
+
 #sidebar-overlay {
   display: none;
   position: fixed;
@@ -2005,68 +2020,172 @@ body {
   background: rgba(0,0,0,0.7);
   z-index: 998;
   cursor: pointer;
-  /* SEM backdrop-filter */
 }
 #sidebar-overlay.open { display: block; }
 
 @media (max-width: 768px) {
 
-  /* App ocupa tudo no mobile */
-  .app { flex: 1; min-width: 0; }
-  body { display: block; }
+  /* ── Layout base ── */
+  body { display: block !important; overflow-x: hidden; }
+  .app { display: block !important; width: 100%; }
 
-  /* Sidebar: escondida por padrão, desliza da esquerda */
+  /* ── SIDEBAR ── */
   .sidebar {
     display: flex !important;
+    flex-direction: column !important;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
-    bottom: 0 !important;
-    right: auto !important;
-    width: 78vw !important;
-    max-width: 300px !important;
-    height: 100vh !important;
+    width: 80vw !important;
+    max-width: 290px !important;
+    height: 100% !important;
+    height: 100dvh !important;
     z-index: 999 !important;
     transform: translateX(-110%) !important;
     transition: transform 0.3s ease !important;
-
-    /* Background 100% sólido e opaco — sem NENHUM blur */
     background: #0e0f1a !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     box-shadow: 4px 0 40px rgba(0,0,0,0.8) !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: max(24px, env(safe-area-inset-bottom, 24px)) !important;
   }
 
-  /* Tema claro */
   [data-theme="light"] .sidebar {
-    background: #ffffff !important;
+    background: #f8f9ff !important;
   }
 
-  /* Sidebar aberta */
   .sidebar.open {
     transform: translateX(0) !important;
   }
 
-  /* Botão hamburger visível */
+  /* ── Sidebar internos: garantir que não sobreponham ── */
+  .sidebar-nav {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .brand {
+    flex-shrink: 0 !important;
+    padding: 20px 14px 16px !important;
+  }
+
+  .theme-picker {
+    flex-shrink: 0 !important;
+    margin: 0 10px 8px !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  .sidebar-user {
+    flex-shrink: 0 !important;
+    margin: 4px 10px 8px !important;
+  }
+
+  .sidebar-dev-footer {
+    flex-shrink: 0 !important;
+    margin: 0 10px 12px !important;
+  }
+
+  /* ── TOPBAR ── */
   .ham { display: flex !important; }
 
-  /* Topbar: sem blur, background sólido */
   .topbar {
+    display: flex !important;
+    align-items: center !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     background: #0e0f1a !important;
-    padding: 0 14px !important;
-    height: 58px !important;
+    padding: 0 10px !important;
+    height: 56px !important;
     position: sticky !important;
     top: 0 !important;
     z-index: 50 !important;
+    gap: 8px !important;
+    overflow: hidden !important;
   }
 
-  [data-theme="light"] .topbar { background: #ffffff !important; }
+  [data-theme="light"] .topbar {
+    background: #ffffff !important;
+  }
 
-  /* Todos os cards: sem blur no mobile */
+  /* Título da topbar */
+  .topbar > div:nth-child(2) {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .topbar-title {
+    font-size: 15px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .topbar-sub { display: none !important; }
+
+  /* Topbar right — apenas ícones essenciais */
+  .topbar-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+    margin-left: auto !important;
+  }
+
+  /* Esconde textos e exportar */
+  .btn-new span { display: none !important; }
+  .btn-export   { display: none !important; }
+  .profile-label { display: none !important; }
+  .profile-arrow { display: none !important; }
+
+  /* Botão + compacto */
+  .btn-new {
+    padding: 8px 10px !important;
+    border-radius: 50% !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    justify-content: center !important;
+  }
+
+  /* Botão perfil compacto */
+  .btn-profile {
+    padding: 5px 7px !important;
+    gap: 0 !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    border-radius: 50% !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+
+  /* Mês nav compacto */
+  .month-nav {
+    padding: 2px !important;
+    gap: 0 !important;
+  }
+
+  .month-label {
+    min-width: 75px !important;
+    font-size: 10px !important;
+    padding: 0 2px !important;
+  }
+
+  .month-arrow {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  /* ── CONTEÚDO ── */
+  .content {
+    padding: 10px !important;
+  }
+
+  /* Sem blur nos cards mobile */
   .gcard, .glass-card, .goal-card, .debt-card2,
   .fixed-card, .wp-banner, .detail-hero,
   .detail-stat-card, .detail-list-card,
@@ -2075,14 +2194,8 @@ body {
     -webkit-backdrop-filter: none !important;
   }
 
-  /* Logo no mobile */
-  .brand-logo-img { width: 90px !important; height: 90px !important; }
-
-  /* Conteúdo */
-  .content { padding: 12px !important; }
-
-  /* Grids */
-  .summary-grid       { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+  /* ── GRIDS ── */
+  .summary-grid       { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
   .charts-row         { grid-template-columns: 1fr !important; }
   .goals-grid         { grid-template-columns: 1fr !important; }
   .fixed-grid         { grid-template-columns: 1fr !important; }
@@ -2090,45 +2203,53 @@ body {
   .dashboard-planning { grid-template-columns: 1fr !important; }
   .detail-stats       { grid-template-columns: 1fr 1fr !important; }
 
-  /* Dívidas */
+  /* ── CARDS MENORES ── */
+  .gcard { padding: 14px !important; }
+  .gcard-value { font-size: 20px !important; letter-spacing: -1px !important; }
+  .gcard-label { font-size: 10px !important; }
+
+  /* ── BANNER ── */
+  .wp-banner {
+    padding: 12px 14px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  .wp-banner-name  { font-size: 16px !important; }
+  .wp-banner-sub   { font-size: 11px !important; }
+
+  .wp-banner-stats {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .wp-stat { align-items: flex-start !important; }
+  .wp-stat-sep { display: none !important; }
+  .wp-stat-val { font-size: 13px !important; }
+
+  /* ── DÍVIDAS ── */
   .debt2-stats         { grid-template-columns: 1fr 1fr !important; }
   .debt2-parcelas-grid { gap: 3px !important; }
-  .debt2-parc          { width: 24px !important; height: 24px !important; font-size: 8px !important; }
+  .debt2-parc          { width: 22px !important; height: 22px !important; font-size: 8px !important; }
 
-  /* Banner */
-  .wp-banner       { padding: 12px 14px !important; flex-wrap: wrap !important; }
-  .wp-banner-logo  { width: 38px !important; height: 38px !important; }
-  .wp-banner-name  { font-size: 15px !important; }
-  .wp-banner-sub   { font-size: 11px !important; }
-  .wp-banner-stats { gap: 8px !important; }
-  .wp-stat-sep     { display: none !important; }
-  .wp-stat-val     { font-size: 12px !important; }
-
-  /* Mês nav */
-  .month-label { min-width: 80px !important; font-size: 11px !important; }
-  .btn-new span { display: none !important; }
-  .topbar-sub   { display: none !important; }
-
-  /* Topbar right — compacto para caber tudo */
-  .topbar-right { gap: 6px !important; flex-shrink: 1 !important; min-width: 0 !important; }
-
-  /* Esconde exportar no mobile */
-  .btn-export { display: none !important; }
-
-  /* Botão entrar: só avatar */
-  .profile-label { display: none !important; }
-  .profile-arrow { display: none !important; }
-  .btn-profile { padding: 6px 8px !important; }
-
-  /* Mês nav mais compacto */
-  .month-nav { padding: 2px !important; }
-  .month-arrow { width: 24px !important; height: 24px !important; }
+  /* ── MODAL ── */
+  .modal {
+    padding: 20px 16px !important;
+    border-radius: 20px !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 400px) {
   .summary-grid { grid-template-columns: 1fr !important; }
   .debt2-stats  { grid-template-columns: 1fr !important; }
+  .month-label  { min-width: 60px !important; font-size: 9px !important; }
 }
+
+
 /* ══════════════════════════════════════════════
    BOTÃO PERFIL / ENTRAR — redesign premium
 ══════════════════════════════════════════════ */
@@ -2191,9 +2312,7 @@ body {
   border-color: rgba(255,255,255,0.4);
 }
 
-.profile-label {
-  position: relative; z-index: 1;
-}
+.profile-label { position: relative; z-index: 1; }
 
 .profile-arrow {
   position: relative; z-index: 1;
@@ -2207,27 +2326,12 @@ body {
   transform: translateX(2px);
 }
 
-/* ══ Modal do cartão — scroll da lista de itens ══ */
+/* ══ Modal cartão — scroll ══ */
 #cardItensList {
   max-height: 320px;
   overflow-y: auto;
   border-radius: var(--r-sm);
   border: 1px solid var(--t4);
-}
-
-#cardItensList::-webkit-scrollbar { width: 4px; }
-#cardItensList::-webkit-scrollbar-track { background: transparent; }
-#cardItensList::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.12);
-  border-radius: 4px;
-}
-
-/* Scroll geral do modal do cartão */
-.modal > div[style*="overflow-y"]::-webkit-scrollbar { width: 4px; }
-.modal > div[style*="overflow-y"]::-webkit-scrollbar-track { background: transparent; }
-.modal > div[style*="overflow-y"]::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
-  border-radius: 4px;
 }
 
 /* ══ Botão pagar fatura completa ══ */
@@ -2253,35 +2357,19 @@ body {
   overflow: hidden;
 }
 
-.btn-pay-all::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
 .btn-pay-all:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(16,185,129,0.5);
   filter: brightness(1.08);
 }
 
-.btn-pay-all:hover::before { opacity: 1; }
 .btn-pay-all:active { transform: translateY(0); }
 
-/* ══════════════════════════════════════════════
-   ALERTAS DE VENCIMENTO
-══════════════════════════════════════════════ */
-.alerts-card {
-  border: 1px solid rgba(244,63,94,0.2) !important;
-}
+/* ══ ALERTAS ══ */
+.alerts-card { border: 1px solid rgba(244,63,94,0.2) !important; }
 
 .alert-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  display: flex; align-items: center; gap: 14px;
   padding: 13px 22px;
   border-left: 3px solid var(--red);
   border-bottom: 1px solid var(--t4);
@@ -2293,8 +2381,7 @@ body {
 .alert-item:hover { filter: brightness(1.06); transform: translateX(2px); }
 
 .alert-ico {
-  width: 38px; height: 38px;
-  border-radius: 10px;
+  width: 38px; height: 38px; border-radius: 10px;
   background: rgba(255,255,255,0.07);
   display: flex; align-items: center; justify-content: center;
   font-size: 18px; flex-shrink: 0;
@@ -2308,15 +2395,12 @@ body {
 .alert-val  { font-family: var(--fh); font-size: 15px; font-weight: 800; color: var(--t1); }
 .alert-days { font-size: 11px; font-weight: 800; margin-top: 3px; letter-spacing: 0.02em; }
 
-/* Pulso para contas que vencem hoje */
 @keyframes alertPulse {
   0%, 100% { box-shadow: inset 3px 0 0 var(--red); }
   50%       { box-shadow: inset 3px 0 0 var(--red), 0 0 14px rgba(244,63,94,0.3); }
 }
-
 .alert-pulse { animation: alertPulse 1.8s ease-in-out infinite; }
 
-/* ══ Badges de urgência nos cards fixos ══ */
 .fixed-urg-badge {
   display: inline-block;
   font-size: 10px; font-weight: 800;
@@ -2329,6 +2413,7 @@ body {
   border: 1px solid rgba(244,63,94,0.2) !important;
   background: rgba(244,63,94,0.03) !important;
 }
+
 /* ══ BOTÃO EXPORTAR ══ */
 .btn-export {
   display: flex; align-items: center; gap: 6px;
@@ -2347,10 +2432,6 @@ body {
 [data-theme="light"] .btn-export:hover {
   background: rgba(99,102,241,0.1);
   border-color: rgba(99,102,241,0.35); color: #6366f1;
-}
-@media (max-width: 768px) {
-  .btn-export span { display: none; }
-  .btn-export { padding: 8px 10px; }
 }
 
 /* ══ CHECKBOXES EXPORT ══ */
@@ -2383,65 +2464,25 @@ body {
 }
 .footer-link:hover { opacity: 0.8; transform: translateY(-1px); }
 
-/* \u2550\u2550 SIDEBAR DEV FOOTER \u2550\u2550 */
+/* ══ SIDEBAR DEV FOOTER ══ */
 .sidebar-dev-footer {
   margin: 0 10px 14px;
   padding: 9px 14px;
   border-radius: 12px;
   background: rgba(255,255,255,.03);
   border: 1px solid var(--gbr);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--t3);
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; font-size: 11px; color: var(--t3);
   font-family: var(--fb);
 }
 
 .sidebar-dev-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: #0a66c2;
-  font-weight: 700;
-  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px;
+  color: #0a66c2; font-weight: 700; text-decoration: none;
   font-size: 11px;
   transition: opacity 0.18s, transform 0.18s;
 }
 
-.sidebar-dev-link:hover {
-  opacity: 0.8;
-  transform: translateY(-1px);
-}
+.sidebar-dev-link:hover { opacity: 0.8; transform: translateY(-1px); }
 
-[data-theme="light"] .sidebar-dev-footer {
-  background: rgba(0,0,0,.03);
-}
-@media (max-width: 768px) {
-  .sidebar {
-    /* iOS Safari: 100vh inclui a barra do browser, dvh corrige isso */
-    height: 100dvh !important;
-    height: -webkit-fill-available !important;
- 
-    /* Scroll funcional no iPhone */
-    overflow-y: scroll !important;
-    -webkit-overflow-scrolling: touch !important;
- 
-    /* Espaço para a home bar do iPhone 14 */
-    padding-bottom: max(24px, env(safe-area-inset-bottom, 24px)) !important;
-  }
- 
-  /* nav cresce e empurra o resto para baixo */
-  .sidebar-nav {
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-  }
- 
-  /* Itens do rodapé da sidebar nunca encolhem */
-  .theme-picker,
-  .sidebar-user,
-  .sidebar-dev-footer {
-    flex-shrink: 0 !important;
-  }
-}
+[data-theme="light"] .sidebar-dev-footer { background: rgba(0,0,0,.03); }
